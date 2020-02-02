@@ -3,6 +3,22 @@
 # django-rest-action-serializer
 A Django app that provides a serializer that allows You to customize the fields according to the action provided without the need to create other serializers.
 
+# Installation
+Install the package using pip
+
+```python
+pip install django-rest-action-serializer
+```
+And then, include the app in your **INSTALLED_APPS** configuration in django settings:
+```python
+INSTALLED_APPS = [
+  ...,
+  ...,
+  'dra'
+]
+
+``
+
 # Quickstart
 
 As an example, let's suppose You have a ModelViewSet which You need to display different fields in the list action and in the retrieve action. Without django-rest-action-serializer, You would do:
@@ -38,8 +54,8 @@ A lot of code, right? See how It's easy to do it with django-rest-action-seriali
 ```python
 from dra.serializers import ActionSerializer
 
-class UserSerializer(serializers.ModelSerializer,
-                     ActionSerializer):
+class UserSerializer(ActionSerializer,
+                     serializers.ModelSerializer):
     
     class Meta:
         model = User
