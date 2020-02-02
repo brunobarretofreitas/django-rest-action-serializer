@@ -7,7 +7,7 @@ class ActionSerializer(serializers.Serializer):
         class Meta:
             fields = ('url', 'user',)
             action_fields_map = {
-                'retrive': {
+                'retrieve': {
                     'fields': fields + ('checked',)
                     'exclude_fields': ['url'],
                     'custom_fields': {
@@ -87,7 +87,6 @@ class ActionSerializer(serializers.Serializer):
     # Overriding the default get_field method
     def get_fields(self):
         declared_fields = super().get_fields()
-        
         # Checking if the view is passed to the serializer instance
         if not (self.context and self.context.get('view', None)):
             return declared_fields

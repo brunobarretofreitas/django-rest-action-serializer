@@ -7,7 +7,7 @@ setuptools.setup(
     name='django-rest-action-serializer',
     version='0.1',
     packages=setuptools.find_packages(),
-    description='A serializer that allows You to customize the fields'
+    description='A Django app that provides a serializer that allows You to customize the fields'
                 'according to the action provided without the need to'
                 'create other serializers.',
     long_description=long_description,
