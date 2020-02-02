@@ -1,3 +1,5 @@
+![Python application](https://github.com/brunobarretofreitas/django-rest-action-serializer/workflows/Python%20application/badge.svg) [![codecov](https://codecov.io/gh/brunobarretofreitas/django-rest-action-serializer/branch/master/graph/badge.svg)](https://codecov.io/gh/brunobarretofreitas/django-rest-action-serializer)
+
 # django-rest-action-serializer
 A Django app that provides a serializer that allows You to customize the fields according to the action provided without the need to create other serializers.
 
