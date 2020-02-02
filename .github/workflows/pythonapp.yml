@@ -27,5 +27,5 @@ jobs:
         CODECOV: ${{ secrets.CODECOV }}
       run: |
         pip install codecov
-        codecov -t ${ CODECOV }
+        codecov -t ${CODECOV}
         
