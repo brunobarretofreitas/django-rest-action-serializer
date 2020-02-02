@@ -17,7 +17,7 @@ INSTALLED_APPS = [
   'dra'
 ]
 
-``
+```
 
 # Quickstart
 
