@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='django-rest-action-serializer',
-    version='0.1',
+    version='1.0.0',
     packages=setuptools.find_packages(),
     description='A Django app that provides a serializer that allows You to customize the fields'
                 'according to the action provided without the need to'
