@@ -17,11 +17,10 @@ class UserSerializer(ActionSerializer,
         )
         action_fields_map = {
             'retrieve': {
-                'fields': fields,
-                'exclude': ('username',),
-                'custom_fields': {
-                    'fullname': serializers.SerializerMethodField(read_only=True)
-                }
+                'fields': fields + (
+                    ('fullname', serializers.SerializerMethodField()),
+                ),
+                'exclude': ('username',)
             }
         }
 

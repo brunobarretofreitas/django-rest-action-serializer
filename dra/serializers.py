@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-class ActionSerializer(serializers.Serializer):
+class ActionSerializer:
     """
     Mixin to add action_fields_map attribute to serializer's Meta.
     ex: 
@@ -8,11 +8,11 @@ class ActionSerializer(serializers.Serializer):
             fields = ('url', 'user',)
             action_fields_map = {
                 'retrieve': {
-                    'fields': fields + ('checked',)
-                    'exclude_fields': ['url'],
-                    'custom_fields': {
-                        'stories': StorySerializer(read_only=True, many=True)
-                    }
+                    'fields': fields + (
+                        'checked',
+                        ('stories', StorySerializer(read_only=True, many=True)),
+                    ),
+                    'exclude_fields': ['url']
                 }
             }
     """
@@ -40,19 +40,41 @@ class ActionSerializer(serializers.Serializer):
 
                 fields = config.get('fields', None)
                 exclude = config.get('exclude', None)
-                custom_fields = config.get('custom_fields', None)
                 
                 if fields is not None:
                     assert isinstance(fields, (list, tuple)), \
                         'The `fields` must be a list. Got `{}`'.format(type(fields).__name__)
+                    
+                    for field in fields:
+                        if isinstance(field, (tuple, list)):
+                            assert len(field) == 2, \
+                                'The custom field must have two items (`field_name`, `field_type`). Got {}'.format(len(field))
 
                 if exclude is not None:
                     assert isinstance(exclude, (list, tuple)), \
-                        '`exclude` attribute must be a list'
-                
-                if custom_fields is not None:
-                    assert isinstance(custom_fields, dict), \
-                        '`custom_fields` must be a dictionary'
+                        '`exclude` attribute must be a list'            
+
+    def _get_custom_fields(self, current_action_fields):
+        """
+        Returns the custom fields ('field', FieldType)
+        """
+        custom_fields = []
+        for field in current_action_fields:
+            if isinstance(field, (list, tuple)):
+                custom_fields.append(field)
+        
+        return custom_fields
+
+    def _get_not_custom_fields(self, current_action_fields):
+        """
+        Returns the normal fields
+        """
+        not_custom_fields = []
+        for field in current_action_fields:
+            if isinstance(field, str):
+                not_custom_fields.append(field)
+        
+        return not_custom_fields
 
     def _get_action_config(self, current_action: str, action_fields_map: dict) -> dict:
         return action_fields_map.get(current_action, None)
@@ -76,13 +98,14 @@ class ActionSerializer(serializers.Serializer):
             return super().get_field_names(declared_fields, info)
         
         fields = list(current_action_config.get('fields', None))
+        not_custom_fields = self._get_not_custom_fields(fields)
         fields_to_remove = current_action_config.get('exclude', None)
 
         if fields_to_remove:
             for field in fields_to_remove:
-                fields.remove(field)
+                not_custom_fields.remove(field)
         
-        return fields
+        return not_custom_fields
 
     # Overriding the default get_field method
     def get_fields(self):
@@ -103,12 +126,13 @@ class ActionSerializer(serializers.Serializer):
 
         if not current_action_config:
             return declared_fields
-                
+
+        fields = current_action_config.get('fields')
+        custom_fields = self._get_custom_fields(fields)
         new_fields = declared_fields.copy()
 
-        custom_fields: dict = current_action_config.get('custom_fields')
         if custom_fields:
-            for key, value in custom_fields.items():
-                new_fields[key] = value
+            for field, field_type in custom_fields:
+                new_fields[field] = field_type
     
         return new_fields

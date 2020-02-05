@@ -7,7 +7,7 @@ setuptools.setup(
     name='django-rest-action-serializer',
     version='1.0.0',
     packages=setuptools.find_packages(),
-    description='A Django app that provides a serializer that allows You to customize the fields'
+    description='A Django app that provides a serializer mixin that allows You to customize the fields'
                 'according to the action provided without the need to'
                 'create other serializers.',
     long_description=long_description,
@@ -18,7 +18,7 @@ setuptools.setup(
     download_url='https://github.com/brunobarretofreitas/django-rest-action-serializer/archive/master.zip',
     keywords='django django-rest-framework api serializer',
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Topic :: Internet :: WWW/HTTP',

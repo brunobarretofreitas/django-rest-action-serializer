@@ -1,22 +1,13 @@
 ![Python application](https://github.com/brunobarretofreitas/django-rest-action-serializer/workflows/Python%20application/badge.svg) [![codecov](https://codecov.io/gh/brunobarretofreitas/django-rest-action-serializer/branch/master/graph/badge.svg)](https://codecov.io/gh/brunobarretofreitas/django-rest-action-serializer)
 
 # django-rest-action-serializer
-A Django app that provides a serializer that allows You to customize the fields according to the action provided without the need to create other serializers.
+A Django app that provides a serializer mixin that allows You to customize the fields according to the action provided without the need to create other serializers.
 
 # Installation
 Install the package using pip
 
 ```python
 pip install django-rest-action-serializer
-```
-And then, include the app in your **INSTALLED_APPS** configuration in django settings:
-```python
-INSTALLED_APPS = [
-  ...,
-  ...,
-  'dra'
-]
-
 ```
 
 # Quickstart
@@ -35,7 +26,7 @@ class SerializerForDetail(SerializerForList):
     stories = StorySerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ('name', 'age', 'stories')
+        fields = ('name', 'age', 'stories', 'email')
     
 
 class UserModelViewSet(ModelViewSet):
@@ -62,14 +53,11 @@ class UserSerializer(ActionSerializer,
         fields = ('url', 'name', 'age',)
         action_fields_map: {
             'retrieve': {
-                'fields': fields + ('stories',),
-                'exclude': ('url',),
-                'custom_fields': {
-                    'stories': StorySerializer(
-                        read_only=True,
-                        many=True
-                    )
-                }
+                'fields': fields + (
+                    'email',
+                    ('stories', StorySerializer(read_only=True, many=True))
+                ),
+                'exclude': ('url',)
             }
         }
         
@@ -85,11 +73,8 @@ class Meta:
     ...
     action_fields_map = {
       '<action name (retrieve, list, delete)>': {
-        'fields': (<all the fields you want to display/provide>),
-        'exclude': (<all the fields you want to remove from the fields attribute>),
-        'custom_fields': { # All the fields you need to customize
-          '<field_name>': <Serializer or Serializer Field Class (ex: UserSerializer, SerializerMethodField)>
-        }
+        'fields': () # All the field you want to display. If You want a custom field, declare it as a Tuple (field name, field type)
+        'exclude': () # All the fields you want to remove from the fields attribute
       }
     }
 ```
